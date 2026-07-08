@@ -14,8 +14,8 @@
           <h4>{{ d.title }}</h4>
           <p>{{ d.desc }}</p>
           <div class="kb-actions">
-            <a class="kb-act primary" [href]="fileUrl(d.file)" target="_blank" rel="noopener"><ion-icon name="eye-outline"></ion-icon> Visualizar</a>
-            <a class="kb-act outline" [href]="fileUrl(d.file)" [attr.download]="d.file"><ion-icon name="download-outline"></ion-icon> Descargar</a>
+            <button class="kb-act primary" (click)="viewFile(d.file)"><ion-icon name="eye-outline"></ion-icon> Visualizar</button>
+            <button class="kb-act outline" (click)="downloadFile(d.file)"><ion-icon name="download-outline"></ion-icon> Descargar</button>
             <button class="kb-act tour" (click)="openTour(i)"><ion-icon name="play-circle-outline"></ion-icon> Recorrido</button>
           </div>
         </div>
@@ -47,7 +47,7 @@
             <div class="tour-openbox">
               <div class="tob-t">¡Recorrido completado!</div>
               <div class="tob-s">Abre el PDF con todo el detalle de "{{ doc.title }}".</div>
-              <a [href]="fileUrl(doc.file)" target="_blank" rel="noopener">Abrir documento →</a>
+              <a href="javascript:void(0)" (click)="viewFile(doc.file)">Abrir documento →</a>
             </div>
           }
         }
