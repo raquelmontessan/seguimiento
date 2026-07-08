@@ -1,0 +1,14 @@
+# Configuración de despliegue en Netlify para la app web (Ionic + Angular).
+[build]
+  command = "npm run build"
+  publish = "www"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# SPA: cualquier ruta del router de Angular (/bienvenida, /conocimiento, etc.)
+# se sirve desde index.html para que no dé 404 al recargar o entrar directo.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
