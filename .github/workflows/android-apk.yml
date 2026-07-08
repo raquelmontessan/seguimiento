@@ -39,6 +39,16 @@ jobs:
       - name: Add Android platform
         run: npx cap add android
 
+      - name: Generate app icon and splash screen
+        run: >
+          npx @capacitor/assets generate
+          --android
+          --assetPath brand
+          --iconBackgroundColor '#ffffff'
+          --iconBackgroundColorDark '#8e2438'
+          --splashBackgroundColor '#faf1f2'
+          --splashBackgroundColorDark '#8e2438'
+
       - name: Sync Capacitor
         run: npx cap sync android
 
