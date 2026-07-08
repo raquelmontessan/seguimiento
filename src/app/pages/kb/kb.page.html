@@ -7,12 +7,6 @@
 
 <ion-content>
   <div class="wrap page-pad">
-    <p class="hint">
-      Documentos de referencia del proceso de pruebas QA. Elige una acción: visualizar el PDF, descargarlo o iniciar
-      un recorrido guiado interactivo. Coloca los archivos PDF en <code>src/assets/kb/</code> para abrirlos o descargarlos.
-      El recorrido guiado no requiere el archivo.
-    </p>
-
     <div class="kb-grid">
       @for (d of docs; track d.id; let i = $index) {
         <div class="kb-card">
