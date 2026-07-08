@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Solo el contenido, sin fondo. Escalado y recentrado a la zona segura
+       del icono adaptativo de Android (el borde exterior se recorta). -->
+  <g transform="translate(512 512) scale(0.80) translate(-512 -475)">
+    <!-- anillo institucional -->
+    <circle cx="512" cy="430" r="288" fill="none" stroke="#b3843a" stroke-width="10" opacity="0.35"/>
+    <!-- monograma QA -->
+    <text x="512" y="470" text-anchor="middle" dominant-baseline="middle"
+          font-family="Segoe UI, system-ui, Arial, sans-serif" font-weight="800"
+          font-size="340" fill="#ffffff" letter-spacing="4">QA</text>
+    <!-- barras de avance (seguimiento) -->
+    <g>
+      <rect x="356" y="712" width="76" height="96"  rx="14" fill="#f0c9d1"/>
+      <rect x="468" y="664" width="76" height="144" rx="14" fill="#e6b98f"/>
+      <rect x="580" y="612" width="76" height="196" rx="14" fill="#b3843a"/>
+    </g>
+    <!-- linea de tendencia -->
+    <path d="M366 700 L506 652 L618 600" fill="none" stroke="#ffffff" stroke-width="12"
+          stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+    <circle cx="618" cy="600" r="16" fill="#ffffff"/>
+  </g>
+</svg>
