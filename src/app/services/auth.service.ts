@@ -14,6 +14,16 @@ export class AuthService {
   readonly isLoggedIn = computed(() => this.profile() !== null);
   readonly isQa = computed(() => this.profile() === 'qa');
 
+  /** Fecha (inclusive) a partir de la cual la app queda restringida a la bienvenida: 10/07/2026. */
+  private readonly fechaBloqueo = new Date(2026, 6, 10);
+
+  /** True cuando la fecha actual es 10/07/2026 o posterior. */
+  appBloqueada(): boolean {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    return hoy.getTime() >= this.fechaBloqueo.getTime();
+  }
+
   constructor() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);

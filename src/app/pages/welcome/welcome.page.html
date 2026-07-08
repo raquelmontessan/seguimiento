@@ -8,10 +8,18 @@
         Panel central del equipo QA para consultar el organigrama, dar seguimiento a la carga de
         trabajo y acceder a la base de conocimiento.
       </p>
-      <ion-button class="wc-cta" (click)="openLogin()">
-        Ingresar por perfil <ion-icon slot="end" name="arrow-forward"></ion-icon>
-      </ion-button>
-      <p class="wc-hint">Elige tu perfil para continuar</p>
+      @if (bloqueada) {
+        <div class="wc-locked">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <p class="wc-locked-t">El periodo de acceso a esta aplicación finalizó el 10/07/2026.</p>
+          <p class="wc-locked-s">Contacta al administrador para más información.</p>
+        </div>
+      } @else {
+        <ion-button class="wc-cta" (click)="openLogin()">
+          Ingresar por perfil <ion-icon slot="end" name="arrow-forward"></ion-icon>
+        </ion-button>
+        <p class="wc-hint">Elige tu perfil para continuar</p>
+      }
     </div>
   </div>
 </ion-content>

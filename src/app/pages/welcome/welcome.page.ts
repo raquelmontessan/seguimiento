@@ -17,12 +17,16 @@ export class WelcomePage {
   private readonly router = inject(Router);
   private readonly modal = viewChild(IonModal);
 
+  /** La app queda restringida a esta pantalla a partir del 10/07/2026. */
+  readonly bloqueada = this.auth.appBloqueada();
+
   loginOpen = signal(false);
   step = signal<'choose' | 'email'>('choose');
   email = signal('');
   showError = signal(false);
 
   openLogin(): void {
+    if (this.bloqueada) return;
     this.step.set('choose');
     this.email.set('');
     this.showError.set(false);
@@ -34,6 +38,7 @@ export class WelcomePage {
   back(): void { this.step.set('choose'); this.showError.set(false); }
 
   async enterQa(): Promise<void> {
+    if (this.bloqueada) return;
     if (this.auth.loginQa(this.email())) {
       await this.dismissAndGo();
     } else {
@@ -42,6 +47,7 @@ export class WelcomePage {
   }
 
   async enterGuest(): Promise<void> {
+    if (this.bloqueada) return;
     this.auth.loginGuest();
     await this.dismissAndGo();
   }

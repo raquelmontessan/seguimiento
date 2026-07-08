@@ -17,6 +17,15 @@
 .wc-cta { margin-top: 30px; --border-radius: 12px; font-weight: 600; height: 50px; --padding-start: 26px; --padding-end: 26px; }
 .wc-hint { margin-top: 14px; font-size: 12.5px; color: var(--ink-3); }
 
+.wc-locked {
+  margin-top: 30px; max-width: 420px;
+  background: var(--warn-bg); border: 1px solid var(--warn-fg); border-radius: 14px;
+  padding: 22px 24px; display: flex; flex-direction: column; align-items: center;
+}
+.wc-locked ion-icon { font-size: 40px; color: var(--warn-fg); margin-bottom: 10px; }
+.wc-locked .wc-locked-t { margin: 0; font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+.wc-locked .wc-locked-s { margin: 8px 0 0; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+
 /* ==== Modal login ==== */
 .login-modal-wrap {
   --width: min(560px, 94vw);
