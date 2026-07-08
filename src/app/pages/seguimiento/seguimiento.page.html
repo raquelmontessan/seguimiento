@@ -10,18 +10,29 @@
 
   @if (auth.isQa()) {
     <!-- ============ VISTA QA ============ -->
+    <div class="seg-layout">
+    <!-- Submenú lateral: navegación por secciones -->
+    <aside class="seg-nav">
+      <h4>Secciones</h4>
+      <a [class.on]="activeSec()==='sec-carga-consultor'" (click)="goSec('sec-carga-consultor')">Carga por consultor (tester) y fase</a>
+      <a [class.on]="activeSec()==='sec-asignar'" (click)="goSec('sec-asignar')">¿Se puede asignar otro proyecto?</a>
+      <a [class.on]="activeSec()==='sec-semaforo'" (click)="goSec('sec-semaforo')">Semáforo de disponibilidad</a>
+      <a [class.on]="activeSec()==='sec-mapas'" (click)="goSec('sec-mapas')">Mapas de calor: quién atiende qué</a>
+      <a [class.on]="activeSec()==='sec-lob'" (click)="goSec('sec-lob')">Carga activa por línea de negocio</a>
+      <a [class.on]="activeSec()==='sec-analista'" (click)="goSec('sec-analista')">Carga por analista QA</a>
+      <div class="upload">
+        <label class="upbtn">
+          <ion-icon name="cloud-upload-outline"></ion-icon> Subir Control Maestro (.xlsx)
+          <input type="file" accept=".xlsx,.xls" (change)="onFile($event)" hidden>
+        </label>
+        <div class="upstatus">{{ qa.uploadStatus() }}</div>
+      </div>
+    </aside>
+
+    <div class="seg-main">
     <div class="intro">
       <h1>Carga activa del equipo QA</h1>
       <p>Control Maestro QA · lectura directa de la hoja "Control Maestro QA" · fases agrupadas para lectura de capacidad</p>
-    </div>
-
-    <!-- Subir Excel -->
-    <div class="upload-card">
-      <label class="upbtn">
-        <ion-icon name="cloud-upload-outline"></ion-icon> Subir Control Maestro (.xlsx)
-        <input type="file" accept=".xlsx,.xls" (change)="onFile($event)" hidden>
-      </label>
-      <span class="upstatus">{{ qa.uploadStatus() }}</span>
     </div>
 
     <!-- Métricas -->
@@ -119,7 +130,7 @@
     </div>
 
     <!-- Gráfica 1 -->
-    <h2 class="sec">Carga por consultor (tester) y fase</h2>
+    <h2 class="sec" id="sec-carga-consultor">Carga por consultor (tester) y fase</h2>
     <p class="hint">Cada barra es un consultor; los segmentos muestran en qué fase está cada asignación en paralelo.</p>
     <div class="legend">
       @for (l of leyendaGrupos(); track l.g) { <span><span class="sw" [style.background]="l.color"></span>{{ l.g }} · {{ l.count }}</span> }
@@ -127,7 +138,7 @@
     <div class="card"><app-chart [config]="chart1()" [height]="chart1Height()"></app-chart></div>
 
     <!-- Capacidad -->
-    <h2 class="sec">¿Se puede asignar otro proyecto?</h2>
+    <h2 class="sec" id="sec-asignar">¿Se puede asignar otro proyecto?</h2>
     <p class="hint">Proyectos activos, carga en ejecución, cierre/seguimiento, líneas atendidas y recomendación por consultor. Haz clic en un renglón para ver su detalle.</p>
     <div class="card" style="overflow-x:auto">
       <table class="cap">
@@ -144,7 +155,7 @@
     </div>
 
     <!-- Semáforo -->
-    <h2 class="sec">Semáforo de disponibilidad</h2>
+    <h2 class="sec" id="sec-semaforo">Semáforo de disponibilidad</h2>
     <p class="hint">Criterio sobre proyectos en <b>ejecución</b>: ≤3 puede recibir · 4–5 al límite · ≥6 saturado. Haz clic en un consultor para ver su detalle.</p>
     <ion-select class="lidsem" label="Líder técnico" labelPlacement="stacked" interface="popover" [value]="lidSem()" (ionChange)="lidSem.set($any($event.detail.value))">
       <ion-select-option value="">Todos</ion-select-option>
@@ -196,7 +207,7 @@
     }
 
     <!-- Mapas de calor -->
-    <h2 class="sec">Mapas de calor: quién atiende qué</h2>
+    <h2 class="sec" id="sec-mapas">Mapas de calor: quién atiende qué</h2>
     <p class="hint">Las tres primeras pestañas cruzan las 156 asignaciones del histórico por tipo. <b>Bloqueantes por línea</b> muestra solo los stoppers; haz clic en una celda para ver cuáles son.</p>
     <ion-segment class="hm-seg" scrollable [value]="hmMode()" (ionChange)="hmMode.set($any($event.detail.value)); closeBlq()">
       <ion-segment-button value="l"><ion-label>Línea × tipo</ion-label></ion-segment-button>
@@ -246,15 +257,17 @@
     }
 
     <!-- Gráfica 2 -->
-    <h2 class="sec">Carga activa por línea de negocio</h2>
+    <h2 class="sec" id="sec-lob">Carga activa por línea de negocio</h2>
     <div class="card"><app-chart [config]="chart2()" [height]="chart2Height()"></app-chart></div>
 
     <!-- Gráfica 3 -->
-    <h2 class="sec">Carga por analista QA</h2>
+    <h2 class="sec" id="sec-analista">Carga por analista QA</h2>
     <p class="hint">Distribución de las asignaciones activas entre los analistas, por grupo de fase.</p>
     <div class="card"><app-chart [config]="chart3()" [height]="200"></app-chart></div>
 
     <p class="footnote">Nombres normalizados (variantes de acentos y mayúsculas unificadas). Métricas, gráficas y semáforo: solo estatus Activo. Mapas de calor: histórico completo. Generado a partir de la hoja "Control Maestro QA".</p>
+    </div><!-- /seg-main -->
+    </div><!-- /seg-layout -->
 
   } @else {
     <!-- ============ VISTA GERENCIAL (INVITADO) ============ -->

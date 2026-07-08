@@ -42,6 +42,7 @@ export class SeguimientoPage {
   lidSem = signal<string>('');
   detailTester = signal<string | null>(null);
   blqSel = signal<{ l: string; mo: string } | null>(null);
+  activeSec = signal<string>('sec-carga-consultor');
 
   private readonly MODE_TITLE: Record<MlMode, string> = {
     act: 'Requerimientos activos',
@@ -238,6 +239,12 @@ export class SeguimientoPage {
   });
   showDetail(t: string): void { this.detailTester.set(t); }
   closeDetail(): void { this.detailTester.set(null); }
+
+  /** Submenú lateral: marca la sección activa y hace scroll suave hasta ella. */
+  goSec(id: string): void {
+    this.activeSec.set(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   // ---- mapas de calor ----
   private heatColor(v: number, max: number): string | null {
