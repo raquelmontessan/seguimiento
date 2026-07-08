@@ -1,0 +1,311 @@
+<ion-header class="app-topbar">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Seguimiento de avance</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="wrap page-pad">
+
+  @if (auth.isQa()) {
+    <!-- ============ VISTA QA ============ -->
+    <div class="intro">
+      <h1>Carga activa del equipo QA</h1>
+      <p>Control Maestro QA · lectura directa de la hoja "Control Maestro QA" · fases agrupadas para lectura de capacidad</p>
+    </div>
+
+    <!-- Subir Excel -->
+    <div class="upload-card">
+      <label class="upbtn">
+        <ion-icon name="cloud-upload-outline"></ion-icon> Subir Control Maestro (.xlsx)
+        <input type="file" accept=".xlsx,.xls" (change)="onFile($event)" hidden>
+      </label>
+      <span class="upstatus">{{ qa.uploadStatus() }}</span>
+    </div>
+
+    <!-- Métricas -->
+    <div class="metrics">
+      <div class="metric" [class.sel]="mlMode()==='act'" (click)="toggleMlist('act')">
+        <div class="lbl">Activos (filtro actual)</div><div class="val">{{ nAct() }}</div><div class="cta">Clic para ver la lista</div>
+      </div>
+      <div class="metric" [class.sel]="mlMode()==='eje'" (click)="toggleMlist('eje')">
+        <div class="lbl">En ejecución</div><div class="val">{{ nEje() }}</div><div class="cta">Clic para ver la lista</div>
+      </div>
+      <div class="metric" [class.sel]="mlMode()==='cie'" (click)="toggleMlist('cie')">
+        <div class="lbl">En cierre / seguimiento</div><div class="val">{{ nCie() }}</div><div class="cta">Clic para ver la lista</div>
+      </div>
+      <div class="metric" [class.sel]="mlMode()==='sla'" (click)="toggleMlist('sla')">
+        <div class="lbl">SLA vencido</div><div class="val bad">{{ nSla() }}</div><div class="cta">Clic para ver la lista</div>
+      </div>
+    </div>
+
+    <!-- Panel de lista -->
+    @if (mlMode()) {
+      <div class="card mlist">
+        <div class="ml-head">
+          <span class="ml-title">{{ mlTitle() }}</span>
+          <div class="ml-actions">
+            <ion-select label="Ver fase" labelPlacement="stacked" interface="popover" [value]="mlFase()" (ionChange)="mlFase.set($any($event.detail.value))">
+              <ion-select-option value="">Todas las fases</ion-select-option>
+              @for (o of mlFaseOptions(); track o.f) {
+                <ion-select-option [value]="o.f">{{ o.f }} ({{ o.count }})</ion-select-option>
+              }
+            </ion-select>
+            <ion-button size="small" fill="outline" (click)="closeMlist()">Cerrar</ion-button>
+          </div>
+        </div>
+        @if (!mlGroups().length) {
+          <div class="proj" style="color:var(--ink-3)">No hay requerimientos con el filtro actual.</div>
+        }
+        @for (grp of mlGroups(); track grp.fase) {
+          <div class="fase-group">
+            <div class="fase-head"><span class="sw" [style.background]="grp.color"></span>{{ grp.fase }} <span class="fase-count">{{ grp.items.length }}</span></div>
+            @for (r of grp.items; track $index) {
+              <div class="proj">
+                <div class="top">
+                  <code>{{ r.q }}</code>
+                  <span class="sw" [style.background]="GCOL[r.g]" [title]="r.g"></span>
+                  <span style="color:var(--ink-2)">{{ r.f }}</span>
+                  <span class="pct">{{ r.av }}% <span class="pct-lbl">avance</span></span>
+                  @if (slaPill(r.s); as p) { <span class="pill {{ p.cls }}">{{ p.txt }}</span> }
+                </div>
+                <div class="sub">{{ r.n }}</div>
+                <div class="meta">{{ r.l }} · {{ r.ac }} · Consultor: {{ r.e }} · Analista: {{ r.a }}</div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Filtros -->
+    <div class="filters">
+      <ion-select label="Tester" labelPlacement="stacked" interface="popover" [value]="qa.filters().tes" (ionChange)="setFilter('tes',$any($event.detail.value))">
+        <ion-select-option value="">Todos</ion-select-option>
+        @for (v of qa.testers(); track v) { <ion-select-option [value]="v">{{ v }}</ion-select-option> }
+      </ion-select>
+      <ion-select label="Analista" labelPlacement="stacked" interface="popover" [value]="qa.filters().ana" (ionChange)="setFilter('ana',$any($event.detail.value))">
+        <ion-select-option value="">Todos</ion-select-option>
+        @for (v of qa.analistas(); track v) { <ion-select-option [value]="v">{{ v }}</ion-select-option> }
+      </ion-select>
+      <ion-select label="Línea de negocio" labelPlacement="stacked" interface="popover" [value]="qa.filters().lob" (ionChange)="setFilter('lob',$any($event.detail.value))">
+        <ion-select-option value="">Todas</ion-select-option>
+        @for (v of qa.lineas(); track v) { <ion-select-option [value]="v">{{ v }}</ion-select-option> }
+      </ion-select>
+      <ion-select label="Fase (grupo)" labelPlacement="stacked" interface="popover" [value]="qa.filters().gru" (ionChange)="setFilter('gru',$any($event.detail.value))">
+        <ion-select-option value="">Todas</ion-select-option>
+        @for (v of GRUPOS; track v) { <ion-select-option [value]="v">{{ v }}</ion-select-option> }
+      </ion-select>
+      @if (faseEspecificaOpts().length > 1) {
+        <ion-select label="Fase específica" labelPlacement="stacked" interface="popover" [value]="qa.filters().fase" (ionChange)="setFilter('fase',$any($event.detail.value))">
+          <ion-select-option value="">Todas</ion-select-option>
+          @for (v of faseEspecificaOpts(); track v) { <ion-select-option [value]="v">{{ v }}</ion-select-option> }
+        </ion-select>
+      }
+      <ion-select label="Fase SMAX" labelPlacement="stacked" interface="popover" [value]="qa.filters().smax" (ionChange)="setFilter('smax',$any($event.detail.value))">
+        <ion-select-option value="">Todas</ion-select-option>
+        @for (v of qa.smaxVals(); track v) { <ion-select-option [value]="v">{{ v }}</ion-select-option> }
+      </ion-select>
+      <ion-select label="Fase interna" labelPlacement="stacked" interface="popover" [value]="qa.filters().int" (ionChange)="setFilter('int',$any($event.detail.value))">
+        <ion-select-option value="">Todas</ion-select-option>
+        @for (v of qa.internaVals(); track v) { <ion-select-option [value]="v">{{ v }}</ion-select-option> }
+      </ion-select>
+      <ion-select label="Tipo" labelPlacement="stacked" interface="popover" [value]="qa.filters().tip" (ionChange)="setFilter('tip',$any($event.detail.value))">
+        <ion-select-option value="">Todos</ion-select-option>
+        @for (v of qa.tipos(); track v) { <ion-select-option [value]="v">{{ v }}</ion-select-option> }
+      </ion-select>
+      <ion-button fill="outline" size="small" class="clearbtn" (click)="clearFilters()">Limpiar filtros</ion-button>
+    </div>
+
+    <!-- Gráfica 1 -->
+    <h2 class="sec">Carga por consultor (tester) y fase</h2>
+    <p class="hint">Cada barra es un consultor; los segmentos muestran en qué fase está cada asignación en paralelo.</p>
+    <div class="legend">
+      @for (l of leyendaGrupos(); track l.g) { <span><span class="sw" [style.background]="l.color"></span>{{ l.g }} · {{ l.count }}</span> }
+    </div>
+    <div class="card"><app-chart [config]="chart1()" [height]="chart1Height()"></app-chart></div>
+
+    <!-- Capacidad -->
+    <h2 class="sec">¿Se puede asignar otro proyecto?</h2>
+    <p class="hint">Proyectos activos, carga en ejecución, cierre/seguimiento, líneas atendidas y recomendación por consultor. Haz clic en un renglón para ver su detalle.</p>
+    <div class="card" style="overflow-x:auto">
+      <table class="cap">
+        <thead><tr><th>Consultor</th><th class="n">Activos</th><th class="n">En ejecución</th><th class="n">Cierre / seguim.</th><th class="n">Líneas</th><th>¿Otro proyecto?</th></tr></thead>
+        <tbody>
+          @for (r of capRows(); track r.t) {
+            <tr style="cursor:pointer" (click)="showDetail(r.t)">
+              <td style="font-weight:500">{{ r.t }}</td><td class="n">{{ r.act }}</td><td class="n"><b>{{ r.e2 }}</b></td>
+              <td class="n">{{ r.c2 }}</td><td class="n">{{ r.lobs }}</td><td><span class="pill {{ r.cls }}">{{ r.rec }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Semáforo -->
+    <h2 class="sec">Semáforo de disponibilidad</h2>
+    <p class="hint">Criterio sobre proyectos en <b>ejecución</b>: ≤3 puede recibir · 4–5 al límite · ≥6 saturado. Haz clic en un consultor para ver su detalle.</p>
+    <ion-select class="lidsem" label="Líder técnico" labelPlacement="stacked" interface="popover" [value]="lidSem()" (ionChange)="lidSem.set($any($event.detail.value))">
+      <ion-select-option value="">Todos</ion-select-option>
+      @for (l of lideresSem(); track l.l) { <ion-select-option [value]="l.l">{{ l.l }} ({{ l.n }})</ion-select-option> }
+    </ion-select>
+    <div class="card">
+      @if (!semRows().length) { <div style="padding:10px 6px;color:var(--ink-3)">No hay consultores para este líder con el filtro actual.</div> }
+      @for (s of semRows(); track s.t) {
+        <div class="semrow" (click)="showDetail(s.t)">
+          <span class="name">{{ s.t }}</span>
+          <span class="num">Ejecución: <b>{{ s.e2 }}</b></span>
+          <span class="num">Cierre: {{ s.c2 }}</span>
+          <span class="pill {{ s.cls }}">{{ s.txt }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Detalle por consultor -->
+    @if (detailTester()) {
+      <div class="card detail">
+        <div class="ml-head">
+          <span class="ml-title">{{ detailTester() }} — {{ detailRows().length }} asignaciones activas</span>
+          <ion-button size="small" fill="outline" (click)="closeDetail()">Cerrar</ion-button>
+        </div>
+        @for (r of detailRows(); track $index) {
+          <div class="proj">
+            <div class="top">
+              <code>{{ r.q }}</code>
+              <span class="sw" [style.background]="GCOL[r.g]" [title]="r.g"></span>
+              <span style="color:var(--ink-2)">{{ r.f }}</span>
+              <span class="pct">{{ r.av }}% <span class="pct-lbl">avance</span></span>
+              @if (slaPill(r.s); as p) { <span class="pill {{ p.cls }}">{{ p.txt }}</span> }
+            </div>
+            <div class="sub">{{ r.n }}</div>
+            <div class="meta">{{ r.l }} · {{ r.ac }} · Consultor: {{ r.e }} · Analista: {{ r.a }}</div>
+            @if (r._d) {
+              <div class="dfase">Fase SMAX: <b>{{ r._d.smax }}</b> · Fase interna: <b>{{ r._d.interna }}</b></div>
+              @if (r.g === 'Definición') {
+                <div class="subfases">
+                  @for (sf of r._d.subs; track sf[0]) {
+                    <div class="sf"><span class="sf-lbl">{{ sf[0] }}</span><span class="sf-bar"><span class="sf-fill" [style.width.%]="sf[1]"></span></span><span class="sf-pct">{{ sf[1] }}%</span></div>
+                  }
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Mapas de calor -->
+    <h2 class="sec">Mapas de calor: quién atiende qué</h2>
+    <p class="hint">Las tres primeras pestañas cruzan las 156 asignaciones del histórico por tipo. <b>Bloqueantes por línea</b> muestra solo los stoppers; haz clic en una celda para ver cuáles son.</p>
+    <ion-segment class="hm-seg" scrollable [value]="hmMode()" (ionChange)="hmMode.set($any($event.detail.value)); closeBlq()">
+      <ion-segment-button value="l"><ion-label>Línea × tipo</ion-label></ion-segment-button>
+      <ion-segment-button value="e"><ion-label>Consultor × tipo</ion-label></ion-segment-button>
+      <ion-segment-button value="st"><ion-label>Estatus × tipo</ion-label></ion-segment-button>
+      <ion-segment-button value="blq"><ion-label>Bloqueantes</ion-label></ion-segment-button>
+    </ion-segment>
+    <div class="card hmwrap">
+      <table class="hm">
+        <thead>
+          <tr><th class="rowh" style="font-weight:600;color:var(--ink-2)">{{ heatTable().colLabel }}</th>
+            @for (c of heatTable().cols; track c) { <th>{{ c }}</th> }
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of heatTable().rows; track row.label) {
+            <tr>
+              <th class="rowh">{{ row.label }}</th>
+              @for (cell of row.cells; track $index) {
+                <td>
+                  @if (cell.v) {
+                    <div class="cell" [class.clk]="heatTable().clickable" [style.background]="cell.bg" [style.color]="cell.fg" (click)="clickHeat(cell)">{{ cell.v }}</div>
+                  } @else { <div class="cell" style="color:#d8d6cd">·</div> }
+                </td>
+              }
+              <td><div class="cell" style="color:var(--ink-2)">{{ row.tot }}</div></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (blqSel()) {
+      <div class="card">
+        <div class="ml-head">
+          <span class="ml-title">{{ blqSel()!.l }} · {{ blqSel()!.mo }} — {{ blqItems().length }} stopper(s)</span>
+          <ion-button size="small" fill="outline" (click)="closeBlq()">Cerrar</ion-button>
+        </div>
+        @for (b of blqItems(); track $index) {
+          <div class="proj">
+            <div class="top"><code>{{ b.q }}</code><span class="pill bad">Stopper</span><span style="color:var(--ink-2)">{{ b.motivo }}</span></div>
+            <div class="sub">{{ b.n }}</div>
+            @if (b.det) { <div class="meta">{{ b.det }}</div> }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Gráfica 2 -->
+    <h2 class="sec">Carga activa por línea de negocio</h2>
+    <div class="card"><app-chart [config]="chart2()" [height]="chart2Height()"></app-chart></div>
+
+    <!-- Gráfica 3 -->
+    <h2 class="sec">Carga por analista QA</h2>
+    <p class="hint">Distribución de las asignaciones activas entre los analistas, por grupo de fase.</p>
+    <div class="card"><app-chart [config]="chart3()" [height]="200"></app-chart></div>
+
+    <p class="footnote">Nombres normalizados (variantes de acentos y mayúsculas unificadas). Métricas, gráficas y semáforo: solo estatus Activo. Mapas de calor: histórico completo. Generado a partir de la hoja "Control Maestro QA".</p>
+
+  } @else {
+    <!-- ============ VISTA GERENCIAL (INVITADO) ============ -->
+    <div class="gm-hero">
+      <h1>Vista Gerencial del Estado de Proyectos QA</h1>
+      <p>Panorama de los proyectos del área de Aseguramiento de Calidad: volumen asignado, avance y distribución por área de negocio.</p>
+    </div>
+
+    <div class="upload-card">
+      <label class="upbtn">
+        <ion-icon name="cloud-upload-outline"></ion-icon> Subir Control Maestro (.xlsx)
+        <input type="file" accept=".xlsx,.xls" (change)="onFile($event)" hidden>
+      </label>
+      <span class="upstatus">{{ qa.uploadStatus() }}</span>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><div class="lbl">Proyectos asignados al área</div><div class="val">{{ gmTotal() }}</div></div>
+      <div class="metric"><div class="lbl">En ejecución</div><div class="val">{{ gmEje() }}</div></div>
+      <div class="metric"><div class="lbl">Cerrados</div><div class="val">{{ gmCie() }}</div></div>
+      <div class="metric"><div class="lbl">Avance promedio</div><div class="val">{{ gmAvg() }}%</div></div>
+    </div>
+
+    <div class="gm-cols">
+      <div>
+        <h2 class="sec">Proyectos por área de negocio</h2>
+        <p class="hint">Distribución de proyectos por área, diferenciando los que están en ejecución de los cerrados.</p>
+        <div class="gm-legend"><span><i class="sw" style="background:var(--blue)"></i>En ejecución</span><span><i class="sw" style="background:var(--slate)"></i>Cerrados</span></div>
+        <div class="card">
+          @for (a of gmAreas(); track a.a) {
+            <div class="gm-area-row">
+              <div class="ga-name">{{ a.a }}</div>
+              <div class="ga-nums"><b>{{ a.t }}</b> · {{ a.e }} ejec · {{ a.c }} cerr</div>
+              <div class="gm-bar"><span class="gm-fill" [style.width.%]="a.wTot"><span class="seg-eje" [style.width.%]="a.wE"></span><span class="seg-cie" [style.width.%]="a.wC"></span></span></div>
+            </div>
+          }
+        </div>
+      </div>
+      <div>
+        <h2 class="sec">Estado general</h2>
+        <p class="hint">Proporción de proyectos del área según su etapa.</p>
+        <div class="card">
+          <app-chart [config]="gmChart()" [height]="300"></app-chart>
+          <div class="gm-chart-legend">
+            @for (l of gmLegend(); track l.g) { <span><i class="sw" [style.background]="l.color"></i>{{ l.g }}</span> }
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="footnote">Vista gerencial de solo lectura. Cifras a nivel de proyecto/asignación con base en la hoja "Control Maestro QA". No incluye detalle por consultor.</p>
+  }
+
+  </div>
+</ion-content>

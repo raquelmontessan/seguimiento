@@ -1,0 +1,73 @@
+<ion-header class="app-topbar">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Base de conocimiento</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="wrap page-pad">
+    <p class="hint">
+      Documentos de referencia del proceso de pruebas QA. Elige una acción: visualizar el PDF, descargarlo o iniciar
+      un recorrido guiado interactivo. Coloca los archivos PDF en <code>src/assets/kb/</code> para abrirlos o descargarlos.
+      El recorrido guiado no requiere el archivo.
+    </p>
+
+    <div class="kb-grid">
+      @for (d of docs; track d.id; let i = $index) {
+        <div class="kb-card">
+          <span class="badge">{{ d.badge }}</span>
+          <h4>{{ d.title }}</h4>
+          <p>{{ d.desc }}</p>
+          <div class="kb-actions">
+            <a class="kb-act primary" [href]="fileUrl(d.file)" target="_blank" rel="noopener"><ion-icon name="eye-outline"></ion-icon> Visualizar</a>
+            <a class="kb-act outline" [href]="fileUrl(d.file)" [attr.download]="d.file"><ion-icon name="download-outline"></ion-icon> Descargar</a>
+            <button class="kb-act tour" (click)="openTour(i)"><ion-icon name="play-circle-outline"></ion-icon> Recorrido</button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</ion-content>
+
+<!-- Modal recorrido guiado -->
+<ion-modal [isOpen]="!!tourDoc()" (didDismiss)="closeTour()" class="tour-modal-wrap">
+  <ng-template>
+    @if (tourDoc(); as doc) {
+      <div class="tour-head">
+        <div class="tour-stepring"><span class="num">{{ tourIdx() + 1 }}</span></div>
+        <div class="tour-head-txt">
+          <div class="tour-kicker">Recorrido guiado · {{ doc.steps.length }} pasos</div>
+          <div class="tour-title">{{ doc.title }}</div>
+        </div>
+        <button class="tour-close" (click)="closeTour()"><ion-icon name="close"></ion-icon></button>
+      </div>
+      <div class="tour-progress"><div class="tour-progress-bar" [style.width.%]="progress()"></div></div>
+
+      <div class="tour-body">
+        @if (currentStep(); as s) {
+          <div class="tour-step-eyebrow">{{ s.eyebrow }} · Paso {{ tourIdx() + 1 }} de {{ doc.steps.length }}</div>
+          <h3 class="tour-step-h">{{ s.h }}</h3>
+          <div [innerHTML]="stepHtml()"></div>
+          @if (isLast()) {
+            <div class="tour-openbox">
+              <div class="tob-t">¡Recorrido completado!</div>
+              <div class="tob-s">Abre el PDF con todo el detalle de "{{ doc.title }}".</div>
+              <a [href]="fileUrl(doc.file)" target="_blank" rel="noopener">Abrir documento →</a>
+            </div>
+          }
+        }
+      </div>
+
+      <div class="tour-foot">
+        <ion-button fill="outline" [disabled]="tourIdx() === 0" (click)="prev()">← Anterior</ion-button>
+        <div class="tour-dots">
+          @for (s of doc.steps; track $index) {
+            <span class="tour-dot" [class.on]="$index === tourIdx()" (click)="goStep($index)"></span>
+          }
+        </div>
+        <ion-button (click)="next()">{{ isLast() ? 'Finalizar ✓' : 'Siguiente →' }}</ion-button>
+      </div>
+    }
+  </ng-template>
+</ion-modal>

@@ -1,0 +1,26 @@
+<ion-header class="app-topbar">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Aseguramiento de Calidad · QA</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="wrap page-pad">
+    <div class="home-hero">
+      <h1>Aseguramiento de Calidad · QA</h1>
+      <p>Hola{{ auth.user() ? ', ' + auth.user()!.n : '' }}. Elige una sección para comenzar.</p>
+    </div>
+
+    <div class="home-cards">
+      @for (c of cards; track c.url) {
+        <a class="hcard" [routerLink]="[c.url]">
+          <div class="ic"><ion-icon [name]="c.icon"></ion-icon></div>
+          <h3>{{ c.title }}</h3>
+          <p>{{ c.desc }}</p>
+          <div class="go">Abrir <ion-icon name="arrow-forward"></ion-icon></div>
+        </a>
+      }
+    </div>
+  </div>
+</ion-content>

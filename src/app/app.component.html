@@ -1,0 +1,44 @@
+<ion-app>
+  <ion-split-pane contentId="main" when="lg">
+    <ion-menu contentId="main" type="overlay" [disabled]="!auth.isLoggedIn()">
+      <ion-content>
+        <div class="brand">
+          <div class="brand-logo">IN</div>
+          <div class="brand-txt">
+            <b>INFONAVIT</b>
+            <span>Aseguramiento de Calidad · QA</span>
+          </div>
+        </div>
+
+        <ion-list lines="none">
+          <ion-list-header>Secciones</ion-list-header>
+          @for (p of pages; track p.url) {
+            <ion-menu-toggle [autoHide]="false">
+              <ion-item [routerLink]="[p.url]" routerLinkActive="selected" detail="false">
+                <ion-icon slot="start" [name]="p.icon"></ion-icon>
+                <ion-label>{{ p.title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          }
+        </ion-list>
+      </ion-content>
+
+      <div class="menu-footer">
+        <div class="session">
+          <ion-icon name="person-circle-outline"></ion-icon>
+          <div class="who">
+            <b>{{ auth.user()?.n || 'Invitado' }}</b>
+            <span>{{ auth.isQa() ? 'Equipo QA' : 'Invitado' }}</span>
+          </div>
+        </div>
+        <ion-menu-toggle [autoHide]="false">
+          <button class="logout" type="button" (click)="logout()">
+            <ion-icon name="log-out-outline"></ion-icon> Cambiar perfil
+          </button>
+        </ion-menu-toggle>
+      </div>
+    </ion-menu>
+
+    <ion-router-outlet id="main"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

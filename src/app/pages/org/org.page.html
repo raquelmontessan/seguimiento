@@ -1,0 +1,86 @@
+<ion-header class="app-topbar">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Organigrama del equipo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="wrap page-pad">
+    <ion-segment [value]="tab()" (ionChange)="tab.set($any($event.detail.value))" class="org-seg">
+      <ion-segment-button value="gen"><ion-label>Organigrama general</ion-label></ion-segment-button>
+      <ion-segment-button value="bk"><ion-label>Backups por línea</ion-label></ion-segment-button>
+    </ion-segment>
+
+    @if (tab() === 'gen') {
+      <div class="card">
+        <div class="org-scroll">
+          <div class="topwrap">
+            <div class="node top">
+              <div class="nm">{{ org.lider.n }}</div>
+              <div class="rl">{{ org.lider.p }}</div>
+            </div>
+          </div>
+          <div class="conn"></div>
+
+          <div class="orgtree">
+            <div class="srvcol">
+              <h4>{{ org.servicio.nombre }}</h4>
+              <div class="stack">
+                @for (m of org.servicio.miembros; track m.n) {
+                  <div class="node tst"><div class="nm">{{ m.n }}</div><div class="rl">{{ m.p }}</div></div>
+                }
+              </div>
+            </div>
+
+            <div class="branches">
+              @for (r of org.ramas; track $index) {
+                <div class="branch">
+                  <div class="node resp r{{ $index }}"><div class="nm">{{ r.respaldo.n }}</div><div class="rl">{{ r.respaldo.p }}</div></div>
+                  <div class="conn"></div>
+                  <div class="node lid" [class.srv]="r.cls === 'srv'">
+                    <div class="nm">{{ r.lider.n }}</div><div class="rl">{{ r.lider.p }}</div>
+                  </div>
+                  @if (r.analista) {
+                    <div class="conn short"></div>
+                    <div class="node ana"><div class="nm">{{ r.analista.n }}</div><div class="rl">{{ r.analista.p }}</div></div>
+                  }
+                  @if (r.testers.length) {
+                    <div class="testers-stack">
+                      @for (t of r.testers; track t.n) {
+                        <div class="node tst"><div class="nm">{{ t.n }}</div><div class="rl">{{ t.p }}</div></div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="cel-grid">
+        @for (cel of org.celulas; track cel.nombre) {
+          <div class="cel-card {{ cel.cls }}">
+            <h3>{{ cel.nombre }}</h3>
+            <div class="sub">Respaldo Infonavit: {{ cel.respaldo }} · Analista QA: {{ cel.analista }} · Backup del líder: {{ cel.backupLider }} · {{ cel.lineas }} líneas · {{ cel.perfiles }}</div>
+            <div class="tablewrap">
+              <table>
+                <thead><tr><th>Línea de negocio</th><th>Tester responsable</th><th>Backup</th></tr></thead>
+                <tbody>
+                  @for (m of cel.mapa; track $index) {
+                    <tr>
+                      <td>{{ m.l }}</td>
+                      <td><b>{{ m.t }}</b><br><span class="bk">{{ m.p }}</span></td>
+                      <td class="bk">{{ m.b }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</ion-content>

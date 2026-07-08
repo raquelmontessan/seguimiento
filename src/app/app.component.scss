@@ -1,0 +1,56 @@
+ion-menu ion-content {
+  --background: #ffffff;
+}
+
+.brand {
+  display: flex; align-items: center; gap: 11px;
+  padding: 18px 16px;
+  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+  border-bottom: 3px solid var(--gold);
+  color: #fff;
+}
+.brand-logo {
+  width: 38px; height: 38px; border-radius: 9px; background: #fff; color: var(--brand);
+  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex: none;
+}
+.brand-txt { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-txt b { font-size: 14px; letter-spacing: .03em; }
+.brand-txt span { font-size: 11.5px; color: #f4dbe1; }
+
+ion-list-header {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-3);
+  min-height: 34px;
+}
+
+ion-menu ion-item {
+  --background: transparent;
+  --color: var(--ink);
+  --border-radius: 9px;
+  margin: 2px 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+ion-menu ion-item ion-icon { color: var(--ink-3); font-size: 20px; }
+ion-menu ion-item.selected {
+  --background: var(--brand-tint);
+  --color: var(--brand);
+  font-weight: 600;
+}
+ion-menu ion-item.selected ion-icon { color: var(--brand); }
+
+.menu-footer {
+  border-top: 1px solid var(--line);
+  padding: 12px 14px;
+  background: #fff;
+}
+.menu-footer .session { display: flex; align-items: center; gap: 10px; }
+.menu-footer .session ion-icon { font-size: 34px; color: var(--brand); }
+.menu-footer .who { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.menu-footer .who b { font-size: 13px; color: var(--ink); }
+.menu-footer .who span { font-size: 11.5px; color: var(--ink-3); }
+.menu-footer .logout {
+  margin-top: 10px; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  font: 500 13px inherit; padding: 9px; border: 1px solid var(--line); border-radius: 9px;
+  background: var(--paper); color: var(--brand); cursor: pointer;
+}
+.menu-footer .logout:hover { background: var(--brand-tint); border-color: var(--brand); }

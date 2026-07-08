@@ -1,0 +1,60 @@
+// ===== Tema INFONAVIT · Aseguramiento de Calidad QA =====
+:root {
+  // Color corporativo (guinda institucional) como primario de Ionic
+  --ion-color-primary: #8e2438;
+  --ion-color-primary-rgb: 142, 36, 56;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #7d1f31;
+  --ion-color-primary-tint: #99394c;
+
+  --ion-color-secondary: #b3843a;
+  --ion-color-secondary-rgb: 179, 132, 58;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #9e7433;
+  --ion-color-secondary-tint: #bb904e;
+
+  --ion-background-color: #f4f2f0;
+  --ion-background-color-rgb: 244, 242, 240;
+  --ion-text-color: #1a1c23;
+  --ion-text-color-rgb: 26, 28, 35;
+  --ion-font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+
+  // Variables propias del tablero
+  --ink: #1a1c23;
+  --ink-2: #5a5f6e;
+  --ink-3: #8b909d;
+  --paper: #f4f2f0;
+  --card: #ffffff;
+  --line: #e6e2dd;
+  --brand: #8e2438;
+  --brand-dark: #6f172a;
+  --brand-soft: #f4dbe1;
+  --brand-tint: #faf1f2;
+  --gold: #b3843a;
+  --blue: #2f3c88;
+  --slate: #4b515e;
+  --acc: #8e2438;
+  --heat: #8e2438;
+
+  --def: #8e2438;
+  --dev: #1f7a5a;
+  --uat: #b3843a;
+  --sf: #c3c2b7;
+  --cie: #9a8f8a;
+
+  --ok-bg: #e2f0e6; --ok-fg: #1c6b3a;
+  --warn-bg: #f8ecd4; --warn-fg: #8a5a00;
+  --bad-bg: #f6dde1; --bad-fg: #8e2438;
+
+  --c1: #8e2438; --c1-bg: #faf1f2;
+  --c2: #6f172a; --c2-bg: #f4dbe1;
+  --srv: #1f7a5a; --srv-bg: #e2f0e6;
+}
+
+// Menú lateral / split-pane
+ion-split-pane {
+  --side-min-width: 248px;
+  --side-max-width: 288px;
+}

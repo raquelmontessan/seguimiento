@@ -1,0 +1,9 @@
+Coloca aquí los PDF de la base de conocimiento con el nombre EXACTO usado en la app:
+
+- Proceso QA Interno_040326.pdf
+- Iniciativa_QA_Testers_actualizada.pdf
+- Analisis_Ambiguedades_Institucional.pdf
+- Matriz_de_Casos_Pruebas_QA_Institucional.pdf
+
+Los botones "Visualizar" y "Descargar" apuntan a /assets/kb/<archivo>.
+El "Recorrido guiado" funciona sin los PDF.

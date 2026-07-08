@@ -1,0 +1,66 @@
+<ion-content [fullscreen]="true" class="welcome-content">
+  <div class="welcome-screen">
+    <div class="wc-inner">
+      <div class="wc-badge">INFONAVIT</div>
+      <h1>Bienvenido</h1>
+      <p class="wc-sub">Aseguramiento de Calidad · QA — INFONAVIT</p>
+      <p class="wc-desc">
+        Panel central del equipo QA para consultar el organigrama, dar seguimiento a la carga de
+        trabajo y acceder a la base de conocimiento.
+      </p>
+      <ion-button class="wc-cta" (click)="openLogin()">
+        Ingresar por perfil <ion-icon slot="end" name="arrow-forward"></ion-icon>
+      </ion-button>
+      <p class="wc-hint">Elige tu perfil para continuar</p>
+    </div>
+  </div>
+</ion-content>
+
+<ion-modal [isOpen]="loginOpen()" (didDismiss)="closeLogin()" class="login-modal-wrap">
+  <ng-template>
+    <div class="login-head">
+      <div class="lh-kick">Acceso al panel</div>
+      <h2>Ingresa por perfil</h2>
+      <p>Selecciona cómo deseas acceder al tablero de QA.</p>
+    </div>
+
+    <div class="login-body">
+      @if (step() === 'choose') {
+        <div class="prof-grid">
+          <button class="prof-card" (click)="chooseQa()">
+            <div class="pc-ic"><ion-icon name="shield-checkmark-outline"></ion-icon></div>
+            <h3>Equipo QA</h3>
+            <p>Acceso completo al panel operativo. Requiere correo registrado en el directorio.</p>
+          </button>
+          <button class="prof-card" (click)="enterGuest()">
+            <div class="pc-ic"><ion-icon name="people-outline"></ion-icon></div>
+            <h3>Invitado</h3>
+            <p>Vista gerencial de solo lectura: organigrama, base de conocimiento y seguimiento por área.</p>
+          </button>
+        </div>
+      } @else {
+        <button class="login-back" (click)="back()">← Cambiar perfil</button>
+        <p class="login-welcome">Ingresa el correo institucional registrado en el directorio del Equipo de QA.</p>
+        <ion-item class="login-field" lines="none">
+          <ion-input
+            label="Correo electrónico" labelPlacement="stacked" type="email"
+            placeholder="nombre@infonavit.org.mx" [value]="email()"
+            (ionInput)="email.set($any($event.target).value)"
+            (keyup.enter)="enterQa()"></ion-input>
+        </ion-item>
+        <ion-button expand="block" class="login-enter" (click)="enterQa()">Ingresar</ion-button>
+
+        @if (showError()) {
+          <div class="login-msg">
+            <div class="lm-t">¿No cuenta con credenciales de acceso?</div>
+            <p>Puede ingresar como Invitado o gestionar la solicitud de acceso al Equipo de QA, conforme a los lineamientos establecidos.</p>
+            <div class="login-actions">
+              <ion-button size="small" (click)="enterGuest()">Ingresar como Invitado</ion-button>
+              <ion-button size="small" fill="outline" (click)="requestAccess($event)">Gestionar solicitud</ion-button>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </ng-template>
+</ion-modal>
