@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'tablero-qa',
+  appId: 'mx.infonavit.qa.tablero',
+  appName: 'Tablero QA',
   webDir: 'www'
 };
 

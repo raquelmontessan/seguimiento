@@ -68,3 +68,8 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Capacitor (plataforma generada en CI)
+/android
+/ios
+/dist-apk
